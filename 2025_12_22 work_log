@@ -30,7 +30,6 @@ Selenium → ChromeDriver → (attach) 기존 Chrome (9222)
 -> requests.get(url) 을 사용하는데 CAPTCHA나 cloudfare가 이미 요청을 거부해서 가져올 수가 없음..
 
 Nodriver 사용해보기
-
 ----예시 코드------
 import nodriver as nd
 
@@ -49,3 +48,7 @@ async def main():
 
 nd.run(main)
 --------------------
+
+📝 참고문헌
+https://scrapfly.io/blog/posts/how-to-bypass-cloudflare-anti-scraping#how-to-bypass-cloudflare-bot-protection
+https://www.zenrows.com/blog/cloudscraper#non-default-features
