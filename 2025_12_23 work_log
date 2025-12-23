@@ -1,0 +1,47 @@
+#2025_12_23 work_log
+
+🔥 금일 목표
+- 로컬에서 메일 보내는 것까지 완성
+- apify에서 현재 쓰는 Actor 대신 사용할 수 있는 actor 정리
+
+🚦 업무 순서
+- DB에서 원하는 데이터가져와 페이지별로 개별 sheet로 엑셀에 저장
+- 서버에서 DATABASE와 스키마 이름만 바꿔서 실행시키기
+
+🚨 문제점
+- cloudfare 때문에 제대로 stylevana 페이지가 크롤링되지 않아서 서버에서 돌림,,
+- yesstyle이 postgresql에 제대로 누적되지 않음. -> channel열에 yesstyle이 YesStyle로 저장되어 있어서 추출되지 않았음
+
+💫✏️📌
+- fallback_query = sql.SQL(
+    """
+    SELECT MAX(created_at)
+    FROM {}.{}
+    WHERE "Channel" = %s
+    AND created_at < %s
+    """
+).format(schema_identifier, table_identifier)
+
+base_query = sql.SQL(
+    """
+    SELECT
+        "Rank",
+        "Brand",
+        "Product",
+        "Old_price",
+        "Price",
+        "DateTime",
+        "Channel",
+        created_at
+    FROM {}.{}
+    WHERE "Channel" = %s
+    AND created_at = %s
+    ORDER BY "Rank" ASC
+    """
+).format(schema_identifier, table_identifier)
+로 가장 최근에 생성된 데이터를 기준으로 비교함
+
+- 참조, 숨은 참조를 python으로 구현하는 방법 알아냄
+.env 파일에
+cc:diana0305@naver.com 으로 입력하면 참조,
+bcc:diana0305@naver.com 으로 입력하면 숨은 참조로 입력됨.
