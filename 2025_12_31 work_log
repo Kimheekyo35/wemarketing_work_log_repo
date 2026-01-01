@@ -1,0 +1,60 @@
+#2025_12_31 work_log
+
+🔥 금일 목표
+- FastAPI를 사용하여, 서버 DB에서 데이터 가져오기
+
+🚦 업무 순서
+1. FastAPI가 어떤 거고, 어떻게 쓰이는지 숙지하기
+2. 우선 로컬에서 실행하고, port를 바꿔서 서버에서 실행하기
+3. 서버 로컬에만 접근할 경우, 방화벽 수정하여 내 컴퓨터에서도 서버 로컬에 접근할 수 있도록 수정
+
+🚨 문제점
+1. 외부에서 서버 로컬 접근하는 방법을 몰라서 처음 서버에서 실행했을 때 웹 화면을 볼 수 없었음
+2. 데이터베이스 이름을 잘못 입력하여 데이터를 제대로 못 가져옴 -> UnicodeDecodeError: 'utf-8' codec can't decode byte ... 이러한 에러가 계속 떴음
+3. SQL문을 더 공부해야할 것 같음
+ 
+💫✏️📌
+1️⃣ FastAPI에서 localhost의 정확한 의미
+- 127.0.0.1 (localhost)는 그 서버 자기 자신
+서버에서 FastAPI를 돌려도
+👉 내 PC에서 localhost로는 절대 접근 불가
+
+외부(다른 서버 / 사내 PC)에서 접근하려면:
+--host 0.0.0.0 필수, 서버 IP로 접속해야 함
+👉 “서버의 localhost ≠ 내 PC의 localhost”
+
+2️⃣ 0.0.0.0으로 바인딩해야 하는 이유
+127.0.0.1 → 내부 전용
+0.0.0.0 → 모든 네트워크 인터페이스에서 요청 수신
+따라서 내 PC에서 서버 로컬에 접근하려면 host를 바꿔줘야 함
+👉 uvicorn main:app --host 0.0.0.0 --port 6666
+
+3️⃣ 방화벽을 여는 방법
+sudo ufw allow *포트번호*/tcp
+IPv6, IPv4 모두 열어줘야 함
+
+4️⃣ psycopg2 'UnicodeDecodeError: 'utf-8' codec can't decode byte' 의 정체
+- 해당 에러가 자주 떴는데 이러한 에러가 뜨는 건 해당 DB에 데이터가 없기 때문\
+
+5️⃣ return vs yield 차이
+FastAPI가 제너레이터(yield)를 직접 관리함.
+
+☑️ FastAPI는 yield를 “열었다가 닫아야 하는 함수”로 인지
+하지만 return을 사용하면 return 되는 순간 함수는 끝난다
+FastAPI는 호출뿐만 아니라, 데이터를 불러오고 JSON으로 변형해야 하는 등 후처리가 남아있는데 
+의존성 함수에서 return을 사용하면, FastAPI가 요청 전체 라이프사이클을 끝내기 전에 DB 세션이 닫힐 수 있다.
+
+6️⃣ result.mappings().all() 이란?
+SQLAlchemy 결과를 “딕셔너리 형태”로 전부 가져오는 방법
+
+왜 mappings().all()이 필요하냐
+👉 SQLAIchemy를 execute하고 나면 튜플 형태로 출력됨.
+예를 들어,
+~~~
+result = db.execute(text("SELECT id, name FROM table"))
+rows = result.fetchall()
+~~~ 이면 결과가
+[ (1, "apple"), (2, "banana") ] 이거임
+
+그래서 mappings().all()을 사용하면 튜플 형태를 모두 딕셔너리 형태로 가져올 수 있음.
+
