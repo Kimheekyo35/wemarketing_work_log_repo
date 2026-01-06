@@ -1,0 +1,23 @@
+# 2026_01_05 work_log
+
+🔥 금일 목표
+- google spreadsheet에 크롤링한 결과 자동으로 입력
+
+🚦 업무 순서
+1. 기존 코드 보고, 어떤 코드가 sheet에 자동 입력하는지 파악
+2. 크롤링한 결과를 service.spreadsheets().values().batchUpdate() 를 사용하여 실제 작성하게 구성
+
+🚨 문제점
+1. 시트마다 '조회수', '좋아요' 의 위치가 다르기 때문에 해당 글자들로 시작 열을 지정해줘야 했음
+2. 네트워크 오류 (WinError 10053) 발생함
+3. playwright로 크롤링을 하는 과정인데 속도가 너무 느렸음
+ 
+💫✏️📌
+`twitter_crawling.py` 기준
+- execute_with_retry 함수는 헤더 이름으로 열 위치를 찾도록 작서함
+- SheetData와 @dataclass: SheetData는 시트 이름/헤더/df/실제 행 번호를 묶은 데이터 클래스로, sheet_data.name, sheet_data.df 처럼 필드를 바로 사용 가능.
+ dataclass는 "관련 값을 묶은 구조체" 라고 생각하면 됨.
+- Python 기본 문법 (assert, raise, group(), strip(), join()) 기능과 정규식/next()의 반환 방식을 공부함
+- parse_count_from_text에서 digits를 fallback으로 쓰는 이유 배움.
+- 네트워크 오류가 발생했는데, 가장 많이 호출하는 시트를 처음으로 실행 + batch_size를 조절하여 100개씩 sheet에 나눠 작성되게 수정하였더니 해결됨
+- ㅊ음에 playwright를 한 url 열 때마다 page을 열도록 작성했음. 그랬더니 시간이 너무 오래걸려서 playwright를 부를 수 있게 class화 시켜서 최초 한번만 열고 url만 바뀌도록 수정함
