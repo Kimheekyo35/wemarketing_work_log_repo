@@ -19,3 +19,52 @@
    m.group() = 10 295
    m.group(1) = 10
    m.group(2) = 295 임.
+
+- python에서 join() 함수
+a = ['BlockDMask', 'python', 'join', 'example']
+result1 = ", ".join(a) -> ,로 a를 join 시키라는 뜻
+result1 = BlockDMask, python, join, example 가 됨.
+
+- log 설정 바꾸기
+logging.basicConfig(
+   filename = : ,
+   filemode = 'a',
+   format = :,
+   datefmt = :,
+    encoding = 'utf-8',
+   # DEBUG 이상되는 건 log에 저장하겠다는 의미
+    level = logging.DEBUG
+)
+# log_x_crawling_test 파일에 log를 저장하겠다는 의미
+logger = logging.getLogger("log_x_crawling_test")
+
+- 이메일 자동화
+SMTP 란? 아웃룩 같은 이메일을 보내주는 서버임.
+이메일을 보내기 위해선 계정을 생성해주고 시트에 client_email 주소를 입력해주고 권한 부여해야 함.
+
+# 암호화 통신
+암호화 방식에 따라 TLS, SSL 로 나뉨.
+- TLS: smtplib.SMTP("서버명", "포트번호)
+- SSL: smtplib.SMTP_SSL("서버명", "포트번호) 사용함
+
+# 본문 + 헤더를 포함한 메일 구성 단계
+ msg = MIMEMultipart()
+ msg["Subject"] = f"X_crawling 오류관련 메일"
+ body = f"{error_reason}\n X URL 접근 실패"
+ msg.attach(MIMEText(body, "plain", _charset="utf-8"))
+ msg["From"] = sender_email
+ msg["To"] = "diana0305@wemarketing.co.kr"
+
+# SMTP 서버에 보내는 코드
+ with smtplib.SMTP("smtp.gmail.com",587) as connection:
+     # connection.set_debuglevel(1) # 로그 확인용
+     connection.starttls()
+     connection.login(user=sender_email , password=sender_password)
+     # 이 코드가 있어야 보내짐
+     connection.sendmail(
+         from_addr = sender_email,
+         to_addrs= ["###"],
+         msg = msg.as_string()
+         )
+
+
